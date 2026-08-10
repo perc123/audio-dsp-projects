@@ -1,6 +1,10 @@
-node_modules/
-.env
-dist/
+# Build output
+sine
 build/
+dist/
+
+# Generated audio
+*.wav
+
+# OS
 .DS_Store
-01-siine-wave/sine.wav
