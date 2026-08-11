@@ -1,7 +1,7 @@
-#include <cmath>
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include "SineOscillator.h"
 
 void writeWav(
         const std::string& filename,
@@ -62,19 +62,44 @@ void writeWav(
         file.close();
     }
 
+
+void writeCsv(const std::string& filename, const std::vector<double>& samples, double sampleRate)
+{
+    std::ofstream file(filename);
+
+    if (!file)
+    {
+    std::cerr << "Could not open CSV file.\n";
+    return;
+    }
+
+    file << "sample,time,amplitude\n";
+
+    for (std::size_t n = 0; n < samples.size(); ++n)
+    {
+        double amplitude = samples[n];
+        double time = static_cast<double>(n) / sampleRate;
+        file << n << "," << time << "," << amplitude << "\n";
+    }
+
+    file.close();
+}
+
 int main() {
     const double sampleRate = 44100.0; // Samples per second
-    const double frequency = 220.0; // Frequency of the sine wave (A4 note)
+    const double frequency = 440.0; // Frequency of the sine wave (A4 note)
     const double duration = 1.0; // Duration of the sine wave in seconds
 
     const int numSamples = static_cast<int>(sampleRate * duration);
 
     std::vector<double> samples(numSamples);
 
-    for (int n = 0; n < numSamples; ++n) {
-        double time = static_cast<double>(n) / sampleRate;
+    SineOscillator oscillator;
+    oscillator.setSampleRate(sampleRate);
+    oscillator.setFrequency(frequency);
 
-        samples[n] = std::sin(2.0 * M_PI * frequency * time);
+    for (int n = 0; n < numSamples; ++n) {
+        samples[n] = oscillator.process();
     }
 
     std::cout << "Generated "
@@ -85,6 +110,9 @@ int main() {
     for (int n = 0; n < 10; ++n) {
         std::cout << samples[n] << "\n";
     }
+
+
+    writeCsv("waveform.csv", samples, sampleRate);
 
     writeWav("sine.wav", samples, sampleRate);
 
