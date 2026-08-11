@@ -87,7 +87,7 @@ void writeCsv(const std::string& filename, const std::vector<double>& samples, d
 
 int main() {
     const double sampleRate = 44100.0; // Samples per second
-    const double frequency = 440.0; // Frequency of the sine wave (A4 note)
+    const double frequency = 440.0; // Frequency of the sine wave
     const double duration = 1.0; // Duration of the sine wave in seconds
 
     const int numSamples = static_cast<int>(sampleRate * duration);
@@ -95,6 +95,7 @@ int main() {
     std::vector<double> samples(numSamples);
 
     SineOscillator oscillator;
+    
     oscillator.setSampleRate(sampleRate);
     oscillator.setFrequency(frequency);
 
@@ -107,13 +108,13 @@ int main() {
                 <<" samples\n";
 
     std::cout << "First 10 samples:\n";
+
     for (int n = 0; n < 10; ++n) {
         std::cout << samples[n] << "\n";
     }
 
 
     writeCsv("waveform.csv", samples, sampleRate);
-
     writeWav("sine.wav", samples, sampleRate);
 
     std::cout << "Wrote sine.wav\n";
