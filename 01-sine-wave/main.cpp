@@ -113,7 +113,6 @@ int main() {
         std::cout << samples[n] << "\n";
     }
 
-
     writeCsv("waveform.csv", samples, sampleRate);
     writeWav("sine.wav", samples, sampleRate);
 
