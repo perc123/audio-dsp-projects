@@ -88,7 +88,7 @@ void writeCsv(const std::string& filename, const std::vector<double>& samples, d
 int main() {
     const double sampleRate = 44100.0; // Samples per second
     const double frequency = 440.0; // Frequency of the sine wave
-    const double duration = 1.0; // Duration of the sine wave in seconds
+    const double duration = 0.02; // Duration of the sine wave in seconds
 
     const int numSamples = static_cast<int>(sampleRate * duration);
 
@@ -100,6 +100,10 @@ int main() {
     oscillator.setFrequency(frequency);
 
     for (int n = 0; n < numSamples; ++n) {
+        if (n == numSamples / 2)
+        {
+            oscillator.setFrequency(880.0); // Change frequency to 880 Hz at halfway point   
+        }
         samples[n] = oscillator.process();
     }
 
