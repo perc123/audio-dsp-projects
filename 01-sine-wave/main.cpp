@@ -87,8 +87,9 @@ void writeCsv(const std::string& filename, const std::vector<double>& samples, d
 
 int main() {
     const double sampleRate = 44100.0; // Samples per second
-    const double frequency = 440.0; // Frequency of the sine wave
-    const double duration = 0.02; // Duration of the sine wave in seconds
+    const double startFrequency = 440.0; // Start frequency of the sine wave
+    const double endFrequency = 100.0; // End frequency of the sine wave
+    const double duration = 2; // Duration of the sine wave in seconds
 
     const int numSamples = static_cast<int>(sampleRate * duration);
 
@@ -97,14 +98,34 @@ int main() {
     SineOscillator oscillator;
     
     oscillator.setSampleRate(sampleRate);
-    oscillator.setFrequency(frequency);
+    oscillator.setFrequency(startFrequency);
 
-    for (int n = 0; n < numSamples; ++n) {
-        if (n == numSamples / 2)
-        {
-            oscillator.setFrequency(880.0); // Change frequency to 880 Hz at halfway point   
-        }
+    // Code for generating the sine wave samples with a frequency sweep from startFrequency to endFrequency
+/*     for (int n = 0; n < numSamples; ++n) {
+        // double time = static_cast<double>(n) / sampleRate;
+        double progress = static_cast<double>(n) / (numSamples);
+        double frequency = startFrequency + (endFrequency - startFrequency) * progress;
+
+        oscillator.setFrequency(frequency);
+
         samples[n] = oscillator.process();
+    } */
+   // Code for generating Amplitude Modulated (AM) sine wave samples
+   for (int n = 0; n < numSamples; ++n) {
+        double time = static_cast<double>(n) / sampleRate;
+        double Amplitude;
+        if (time < 0.5) {
+            Amplitude = time / 0.5; // Ramp up from 0 to 1 over the first 0.5 seconds
+        }
+        else if (time > 1.75) {
+            Amplitude = (duration - time) / 0.25; // Ramp down from 1 to 0 over the last 0.25 seconds
+        }
+        else {
+            Amplitude = 1.0; // Constant amplitude of 1 between 0.5 and 0.75 seconds
+        }
+        double sample = oscillator.process();
+
+        samples[n] = sample * Amplitude;
     }
 
     std::cout << "Generated "
